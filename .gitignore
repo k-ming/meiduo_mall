@@ -1,0 +1,4 @@
+meiduo_mall/logs/*.log
+meiduo_mall/meiduo_mall/settings/__pycache__/*.pyc
+meiduo_mall/meiduo_mall/__pycache__/*.pyc
+
