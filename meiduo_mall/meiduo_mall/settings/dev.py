@@ -11,11 +11,17 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-import os
+import os, sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+'''
+追加导包路径
+注册app方便
+修改用户注册模型 方便 AUTH_USER_MODEL
+'''
+sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
+#print(sys.path)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -39,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework', #drf
+    'users.apps.UsersConfig'
 ]
 
 MIDDLEWARE = [
@@ -132,18 +139,25 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # 配置redis数据库作为缓存后端 
 CACHES = {
-    "default": {
+    "default": { #缓存省市区数据
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://192.168.103.210:6379/0", 
+        "LOCATION": "redis://127.0.0.1:6379/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient", 
         }
     }, 
-    "session": {
+    "session": { #缓存session
         "BACKEND": "django_redis.cache.RedisCache", 
-        "LOCATION": "redis://192.168.103.210:6379/1", 
+        "LOCATION": "redis://127.0.0.1:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient", 
+        }
+    },
+    "verify_codes": {  # 存储验证码
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
 }
@@ -191,3 +205,10 @@ LOGGING = {
         },
     }
 }
+
+REST_FRAMEWORK = {
+    # 异常处理理
+    'EXCEPTION_HANDLER': 'meiduo_mall.utils.exceptions.exception_handler',
+}
+
+AUTH_USER_MODEL = 'users.User'
