@@ -1,4 +1,12 @@
 meiduo_mall/logs/*.log
 meiduo_mall/meiduo_mall/settings/__pycache__/*.pyc
 meiduo_mall/meiduo_mall/__pycache__/*.pyc
+.idea/
+meiduo_mall/meiduo_mall/apps/users/__pycache__/
+meiduo_mall/meiduo_mall/apps/users/migrations/
+meiduo_mall/meiduo_mall/apps/verifications/__pycache__/
+meiduo_mall/meiduo_mall/apps/verifications/migrations/
+meiduo_mall/meiduo_mall/libs/__pycache__/
+meiduo_mall/meiduo_mall/libs/yuntongxun/__pycache__/
+meiduo_mall/meiduo_mall/utils/__pycache__/
 

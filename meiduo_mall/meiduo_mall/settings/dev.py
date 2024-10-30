@@ -32,7 +32,7 @@ SECRET_KEY = 'django-insecure-&qh!3h=b+$$v+yz73%idn+w)$t7!a5xr&0y+z$z=7)sss)j3f&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost',]
 
 
 # Application definition
@@ -45,10 +45,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework', #drf
-    'users.apps.UsersConfig'
+    'users.apps.UsersConfig',
+    'corsheaders', # cors'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware', #浏览器跨域
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -211,4 +213,12 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'meiduo_mall.utils.exceptions.exception_handler',
 }
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'users.User' #修改默认user model
+
+# CORS  追加⽩白名单
+CORS_ORIGIN_WHITELIST = (
+    'http://127.0.0.1:8080',
+    'http://localhost:8080',
+)
+CORS_ALLOW_CREDENTIALS = True  # 允许携带cookie
+
