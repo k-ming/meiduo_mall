@@ -22,5 +22,6 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('verifications.urls')),  # 发短信模块
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    url(r'^', include('users.urls')), # 用户模块
+]
 

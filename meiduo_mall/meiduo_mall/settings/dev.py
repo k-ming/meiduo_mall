@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os, sys
+import datetime
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 修改用户注册模型 方便 AUTH_USER_MODEL
 '''
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
-#print(sys.path)
+# print(sys.path)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -32,8 +33,7 @@ SECRET_KEY = 'django-insecure-&qh!3h=b+$$v+yz73%idn+w)$t7!a5xr&0y+z$z=7)sss)j3f&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost',]
-
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', ]
 
 # Application definition
 
@@ -44,17 +44,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework', #drf
+    'rest_framework',  # drf
     'users.apps.UsersConfig',
-    'corsheaders', # cors'
+    'corsheaders',  # cors'
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware', #浏览器跨域
+    'corsheaders.middleware.CorsMiddleware',  # 浏览器跨域
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware', # 防止跨站请求伪造
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -80,7 +80,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'meiduo_mall.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
@@ -94,7 +93,6 @@ DATABASES = {
         'PASSWORD': '1234'
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -114,7 +112,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -128,7 +125,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
@@ -141,18 +137,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # 配置redis数据库作为缓存后端 
 CACHES = {
-    "default": { #缓存省市区数据
+    "default": {  # 缓存省市区数据
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379/0",
         "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient", 
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
-    }, 
-    "session": { #缓存session
-        "BACKEND": "django_redis.cache.RedisCache", 
+    },
+    "session": {  # 缓存session
+        "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379/1",
         "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient", 
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
     "verify_codes": {  # 存储验证码
@@ -163,7 +159,7 @@ CACHES = {
         }
     }
 }
-SESSION_ENGINE = "django.contrib.sessions.backends.cache" 
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "session"
 
 # ⽇日志 
@@ -172,15 +168,15 @@ LOGGING = {
     'disable_existing_loggers': False,  # 是否禁⽤用已经存在的⽇日志器器 
     'formatters': {  # ⽇日志信息显示的格式
         'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(lineno)d %(message)s' 
+            'format': '%(levelname)s %(asctime)s %(module)s %(lineno)d %(message)s'
         },
         'simple': {
-            'format': '%(levelname)s %(module)s %(lineno)d %(message)s' 
+            'format': '%(levelname)s %(module)s %(lineno)d %(message)s'
         },
     },
     'filters': {  # 对⽇日志进⾏行行过滤
         'require_debug_true': {  # django在debug模式下才输出⽇日志
-            '()': 'django.utils.log.RequireDebugTrue', 
+            '()': 'django.utils.log.RequireDebugTrue',
         },
     },
     'handlers': {  # ⽇日志处理理⽅方法
@@ -211,14 +207,26 @@ LOGGING = {
 REST_FRAMEWORK = {
     # 异常处理理
     'EXCEPTION_HANDLER': 'meiduo_mall.utils.exceptions.exception_handler',
+    # 认证
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
 }
 
-AUTH_USER_MODEL = 'users.User' #修改默认user model
+AUTH_USER_MODEL = 'users.User'  # 修改默认user model
 
 # CORS  追加⽩白名单
 CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1:8080',
     'http://localhost:8080',
+    'http://www.meiduo.site:8080',
 )
 CORS_ALLOW_CREDENTIALS = True  # 允许携带cookie
 
+# JWT的有效期
+JWT_AUTH = {
+    # token有限期
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
+}
